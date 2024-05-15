@@ -7,13 +7,39 @@ soup = BeautifulSoup(response.text, 'html.parser')
 
 results = soup.find_all('a')
 
+
+labels={
+
+}
+
 for a in results:
 
     if a['href'][:5] != 'https':
-        info = requests.get(f"https://pypi.org{a['href']}")
+        page = requests.get(f"https://pypi.org{a['href']}")
+        
+        changeformat = BeautifulSoup(page.text, 'html.parser')
 
-        print(info)
+        res = changeformat.find_all(["h1", "p"])
+
+        dicOfLabels = []
+
+        for label in res:
+            dicOfLabels.append(label)
+        
+        labels[f"https://pypi.org{a['href']}"] = dicOfLabels
+
     else:
-        info = requests.get(a['href'])
+        page = requests.get(a['href'])
 
-        print(info)
+        changeformat = BeautifulSoup(page.text, 'html.parser')
+
+        res = changeformat.find_all(["h1", "p"])
+
+        dicOfLabels = []
+
+        for label in res:
+            dicOfLabels.append(label)
+        
+        labels[f"https://pypi.org{a['href']}"] = dicOfLabels
+
+print(labels)
