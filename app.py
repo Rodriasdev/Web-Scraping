@@ -1,7 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 
-page = "https://pypi.org"
+link = "https://pypi.org"
 
 def requestToThePage(url):
     response = requests.get(url)
@@ -52,6 +52,6 @@ def captureTags(url):
     return labels
 
 
-print(captureTags(page))
+print(captureTags(link))
 
 
