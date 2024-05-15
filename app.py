@@ -1,7 +1,9 @@
 import requests
 from bs4 import BeautifulSoup
 
-response = requests.get("https://pypi.org")
+url = "https://pypi.org"
+
+response = requests.get(url)
 
 soup = BeautifulSoup(response.text, 'html.parser')
 
@@ -15,7 +17,7 @@ labels={
 for a in results:
 
     if a['href'][:5] != 'https':
-        page = requests.get(f"https://pypi.org{a['href']}")
+        page = requests.get(url + a['href'])
         
         changeformat = BeautifulSoup(page.text, 'html.parser')
 
@@ -26,7 +28,7 @@ for a in results:
         for label in res:
             dicOfLabels.append(label)
         
-        labels[f"https://pypi.org{a['href']}"] = dicOfLabels
+        labels[url + a['href']] = dicOfLabels
 
     else:
         page = requests.get(a['href'])
@@ -40,6 +42,6 @@ for a in results:
         for label in res:
             dicOfLabels.append(label)
         
-        labels[f"https://pypi.org{a['href']}"] = dicOfLabels
+        labels[a['href']] = dicOfLabels
 
 print(labels)
