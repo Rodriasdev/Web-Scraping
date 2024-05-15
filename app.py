@@ -1,47 +1,57 @@
 import requests
 from bs4 import BeautifulSoup
 
-url = "https://pypi.org"
+page = "https://pypi.org"
 
-response = requests.get(url)
+def requestToThePage(url):
+    response = requests.get(url)
 
-soup = BeautifulSoup(response.text, 'html.parser')
-
-results = soup.find_all('a')
+    soup = BeautifulSoup(response.text, 'html.parser')
 
 
-labels={
+    return soup
 
-}
 
-for a in results:
 
-    if a['href'][:5] != 'https':
-        page = requests.get(url + a['href'])
-        
-        changeformat = BeautifulSoup(page.text, 'html.parser')
+def captureTags(url):
+    soup = requestToThePage(url)
 
-        res = changeformat.find_all(["h1", "p"])
+    results = soup.find_all('a')
 
-        dicOfLabels = []
+    labels={
 
-        for label in res:
-            dicOfLabels.append(label)
-        
-        labels[url + a['href']] = dicOfLabels
+    }
 
-    else:
-        page = requests.get(a['href'])
+    for a in results:
 
-        changeformat = BeautifulSoup(page.text, 'html.parser')
+        if a['href'][:5] != 'https':
+            page = requestToThePage(url + a['href'])
 
-        res = changeformat.find_all(["h1", "p"])
+            res = page.find_all(["h1", "p"])
 
-        dicOfLabels = []
+            listOfLabels = []
 
-        for label in res:
-            dicOfLabels.append(label)
-        
-        labels[a['href']] = dicOfLabels
+            for label in res:
+                listOfLabels.append(label)
+            
+            labels[url + a['href']] = listOfLabels
 
-print(labels)
+
+        if a['href'][:5] == 'https':
+            page = requestToThePage(a['href'])
+
+            res = page.find_all(["h1", "p"])
+
+            listOfLabels = []
+
+            for label in res:
+                listOfLabels.append(label)
+            
+            labels[a['href']] = listOfLabels
+
+    return labels
+
+
+print(captureTags(page))
+
+
